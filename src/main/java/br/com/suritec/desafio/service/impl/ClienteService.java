@@ -1,7 +1,10 @@
 package br.com.suritec.desafio.service.impl;
 
 import br.com.suritec.desafio.domain.Cliente;
+import br.com.suritec.desafio.domain.Funcoes;
+import br.com.suritec.desafio.domain.OperationControl;
 import br.com.suritec.desafio.repository.ClienteRepository;
+import br.com.suritec.desafio.repository.OperationRepository;
 import br.com.suritec.desafio.service.AbstractService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,18 +25,24 @@ public class ClienteService implements AbstractService<Cliente> {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private OperationRepository operationRepository;
+
     @Override
     public Optional<Cliente> findByCode(Long code) {
+        registerOperation(Funcoes.BUSCAR.getDescricao());
         return this.clienteRepository.findById(code);
     }
 
     @Override
     public Collection<Cliente> findAll() {
+        registerOperation(Funcoes.CONSULTAR.getDescricao());
         return this.clienteRepository.findAll();
     }
 
     @Override
     public Cliente save(Cliente cliente) {
+        registerOperation(Funcoes.CADASTRAR.getDescricao());
         return this.clienteRepository.save(cliente);
     }
 
@@ -43,11 +52,13 @@ public class ClienteService implements AbstractService<Cliente> {
             throw new EmptyResultDataAccessException(1);
         }
         BeanUtils.copyProperties(cliente, clienteSalvo, "code");
+        registerOperation(Funcoes.ATUALIZAR.getDescricao());
         return this.clienteRepository.save(clienteSalvo.get());
     }
 
     @Transactional(readOnly = true)
     public Optional<Cliente> findByCpf(String cpf) {
+        registerOperation(Funcoes.BUSCAR_CPF.getDescricao());
         return this.clienteRepository.findOneByCpf(cpf);
     }
 
@@ -56,6 +67,13 @@ public class ClienteService implements AbstractService<Cliente> {
         clienteRepository.findById(code).ifPresent(aluno -> {
             clienteRepository.delete(aluno);
         });
+    }
+
+    @Transactional
+    void registerOperation(String funcao) {
+        OperationControl operation = new OperationControl(funcao);
+        operationRepository.save(operation);
+
     }
 
 }

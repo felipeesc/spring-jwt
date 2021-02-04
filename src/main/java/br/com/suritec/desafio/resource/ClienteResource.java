@@ -6,6 +6,7 @@ import br.com.suritec.desafio.service.impl.ClienteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,7 +35,14 @@ public class ClienteResource {
         return studentReturned.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{cpf}")
+    public ResponseEntity<Cliente> findByCpf(@RequestBody Cliente cliente) {
+        Optional<Cliente> studentReturned = this.clienteService.findByCpf(cliente.getCpf());
+        return studentReturned.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Cliente> save(@Valid @RequestBody Cliente cliente) {
         Cliente clienteSalved = this.clienteService.save(cliente);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{code}").buildAndExpand(clienteSalved.getCpf()).toUri();
@@ -42,12 +50,14 @@ public class ClienteResource {
     }
 
     @PostMapping("/{code}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long code) {
         this.clienteService.delete(code);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("cliente.removed", String.valueOf(code))).build();
     }
 
     @PutMapping("/{code}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Cliente> edit(@Valid @RequestBody Cliente cliente) {
         Cliente clienteReturned = this.clienteService.edit(cliente);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("cliente editado.", String.valueOf(clienteReturned.getCode()))).build();

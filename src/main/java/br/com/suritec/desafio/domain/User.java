@@ -38,6 +38,9 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "token", nullable = false)
+    private String token;
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(schema = "security", name = "user_authority",
@@ -60,6 +63,14 @@ public class User implements Serializable {
 
     public Set<Authority> getAuthorities() {
         return authorities;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

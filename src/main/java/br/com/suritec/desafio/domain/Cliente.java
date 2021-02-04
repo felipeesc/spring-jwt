@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 
 @Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(schema = "domain", name = "cliente")
 public final class Cliente extends Person implements Serializable {
@@ -24,12 +22,22 @@ public final class Cliente extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_code")
     private Long code;
 
-    public Cliente(String nome,  String email, String telefone, String cpf, User user) {
+    public Cliente(String nome, String email, String telefone, String cpf, User user) {
         setNome(nome);
         setEmail(email);
         setPhone(telefone);
         setCpf(cpf);
         setUsuario(user);
+
+    }
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "operation_code", referencedColumnName = "operation_code")
+    private OperationControl operationControls;
+
+    public Cliente() {
+
     }
 
     public Long getCode() {
