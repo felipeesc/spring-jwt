@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 @Entity
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(schema = "domain", name = "cliente")
 public final class Cliente extends Person implements Serializable {
@@ -22,22 +23,12 @@ public final class Cliente extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_code")
     private Long code;
 
-    public Cliente(String nome, String email, String telefone, String cpf, User user) {
+    public Cliente(String nome, String email, String telefone, String cpf, Endereco endereco) {
         setNome(nome);
         setEmail(email);
         setPhone(telefone);
         setCpf(cpf);
-        setUsuario(user);
-
-    }
-
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "operation_code", referencedColumnName = "operation_code")
-    private OperationControl operationControls;
-
-    public Cliente() {
-
+        setEndereco(endereco);
     }
 
     public Long getCode() {

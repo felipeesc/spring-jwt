@@ -21,8 +21,7 @@ import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecur
 @Configuration
 @EnableWebSecurity
 @EnableResourceServer
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableGlobalMethodSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -37,8 +36,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-//                .anyRequest().authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
+//                .anyRequest().permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
     }

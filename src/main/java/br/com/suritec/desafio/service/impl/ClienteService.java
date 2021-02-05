@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,7 @@ public class ClienteService implements AbstractService<Cliente> {
     @Override
     public Cliente save(Cliente cliente) {
         registerOperation(Funcoes.CADASTRAR.getDescricao());
+        cliente.setCpf(retirarCaracteres(cliente.getCpf()));
         return this.clienteRepository.save(cliente);
     }
 
@@ -51,6 +53,7 @@ public class ClienteService implements AbstractService<Cliente> {
         if (clienteSalvo.get() == null) {
             throw new EmptyResultDataAccessException(1);
         }
+        cliente.setCpf(retirarCaracteres(cliente.getCpf()));
         BeanUtils.copyProperties(cliente, clienteSalvo, "code");
         registerOperation(Funcoes.ATUALIZAR.getDescricao());
         return this.clienteRepository.save(clienteSalvo.get());
@@ -59,13 +62,13 @@ public class ClienteService implements AbstractService<Cliente> {
     @Transactional(readOnly = true)
     public Optional<Cliente> findByCpf(String cpf) {
         registerOperation(Funcoes.BUSCAR_CPF.getDescricao());
-        return this.clienteRepository.findOneByCpf(cpf);
+        return this.clienteRepository.findOneByCpf(retirarCaracteres(cpf));
     }
 
     @Override
     public void delete(Long code) {
-        clienteRepository.findById(code).ifPresent(aluno -> {
-            clienteRepository.delete(aluno);
+        clienteRepository.findById(code).ifPresent(cliente -> {
+            clienteRepository.delete(cliente);
         });
     }
 
@@ -74,6 +77,41 @@ public class ClienteService implements AbstractService<Cliente> {
         OperationControl operation = new OperationControl(funcao);
         operationRepository.save(operation);
 
+    }
+
+    public static String retirarCaracteres(String str) {
+        StringBuilder retorno = new StringBuilder();
+        if (notEmpty(str)) {
+            for (int i = 0; i < str.length(); i++) {
+                if (str.charAt(i) != '.' && str.charAt(i) != '-' && str.charAt(i) != '/') {
+                    retorno.append(str.charAt(i));
+                }
+            }
+        }
+        return retorno.toString();
+    }
+
+    public static boolean notEmpty(Object atributo) {
+        return isEmpty(atributo) ^ true;
+    }
+
+    public static Boolean isEmpty(Object param) {
+
+        if (param == null) {
+            return true;
+        }
+
+        if (param instanceof String && ((String) param).trim().equals("")) {
+            return true;
+        }
+        if (param instanceof Collection && ((Collection<?>) param).isEmpty()) {
+            return true;
+        }
+        if (param instanceof Map && ((Map<?, ?>) param).isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 
 }

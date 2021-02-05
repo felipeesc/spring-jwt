@@ -30,13 +30,8 @@ public abstract class Person implements Serializable {
 
     @NotBlank
     @CPF
-    @Size(min = 1, max = 11)
     @Column(length = 11, unique = true, nullable = false)
     private String cpf;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code", referencedColumnName = "user_code")
-    private User user;
 
     @Embedded
     private Endereco endereco;
@@ -75,13 +70,6 @@ public abstract class Person implements Serializable {
         this.cpf = cpf;
     }
 
-    public User getUsuario() {
-        return user;
-    }
-
-    public void setUsuario(User user) {
-        this.user = user;
-    }
 
     public Endereco getEndereco() {
         return endereco;

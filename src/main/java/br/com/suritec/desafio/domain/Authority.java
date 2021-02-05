@@ -1,12 +1,14 @@
 package br.com.suritec.desafio.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
+import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 
 @Entity
@@ -20,6 +22,9 @@ public final class Authority implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "name", length = 50, nullable = false)
     private String name;
+
+    @ManyToMany
+    private List<User> users;
 
     public String getName() {
         return name;
@@ -41,6 +46,14 @@ public final class Authority implements Serializable {
         return !(name != null ? !name.equals(authority.name) : authority.name != null);
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
@@ -50,4 +63,5 @@ public final class Authority implements Serializable {
     public String toString() {
         return "Authority{" + "nome='" + name + '\'' + "}";
     }
+
 }

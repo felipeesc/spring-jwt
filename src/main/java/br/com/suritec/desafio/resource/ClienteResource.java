@@ -31,18 +31,12 @@ public class ClienteResource {
 
     @GetMapping("/{code}")
     public ResponseEntity<Cliente> findByCode(@PathVariable Long code) {
-        Optional<Cliente> studentReturned = this.clienteService.findByCode(code);
-        return studentReturned.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/{cpf}")
-    public ResponseEntity<Cliente> findByCpf(@RequestBody Cliente cliente) {
-        Optional<Cliente> studentReturned = this.clienteService.findByCpf(cliente.getCpf());
-        return studentReturned.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Cliente> clienteReturned = this.clienteService.findByCode(code);
+        return clienteReturned.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Cliente> save(@Valid @RequestBody Cliente cliente) {
         Cliente clienteSalved = this.clienteService.save(cliente);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{code}").buildAndExpand(clienteSalved.getCpf()).toUri();
@@ -50,14 +44,14 @@ public class ClienteResource {
     }
 
     @PostMapping("/{code}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long code) {
         this.clienteService.delete(code);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("cliente.removed", String.valueOf(code))).build();
     }
 
     @PutMapping("/{code}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Cliente> edit(@Valid @RequestBody Cliente cliente) {
         Cliente clienteReturned = this.clienteService.edit(cliente);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("cliente editado.", String.valueOf(clienteReturned.getCode()))).build();

@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -38,8 +39,6 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "token", nullable = false)
-    private String token;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
@@ -47,7 +46,7 @@ public class User implements Serializable {
             joinColumns = {@JoinColumn(name = "user_code", referencedColumnName = "code")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @BatchSize(size = 20)
-    private Set<Authority> authorities = new HashSet<>(0);
+    private List<Authority> authorities;
 
     public Long getCode() {
         return code;
@@ -61,16 +60,12 @@ public class User implements Serializable {
         return password;
     }
 
-    public Set<Authority> getAuthorities() {
+    public List<Authority> getAuthorities() {
         return authorities;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override
