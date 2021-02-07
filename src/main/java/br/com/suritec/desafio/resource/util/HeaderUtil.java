@@ -31,15 +31,15 @@ public final class HeaderUtil {
     }
 
     public static HttpHeaders createEntityCreationAlert(String entityName, String param) {
-        return createAlert(APPLICATION_NAME + "." + entityName + ".created", param);
+        return createAlert(APPLICATION_NAME + "." + entityName + ".criado", param);
     }
 
     public static HttpHeaders createEntityUpdateAlert(String entityName, String param) {
-        return createAlert(APPLICATION_NAME + "." + entityName + ".updated", param);
+        return createAlert(APPLICATION_NAME + "." + entityName + ".editado", param);
     }
 
     public static HttpHeaders createEntityDeletionAlert(String entityName, String param) {
-        return createAlert(APPLICATION_NAME + "." + entityName + ".deleted", param);
+        return createAlert(APPLICATION_NAME + "." + entityName + ".deletado", param);
     }
 
     /**

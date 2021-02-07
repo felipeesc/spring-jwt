@@ -1,13 +1,10 @@
 spring:
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: ${DATASOURCE_URL:${datasource.url:jdbc:mysql:////${DATASOURCE_SERVER:${datasource.server:""}}:${DATASOURCE_PORT:${datasource.port:5432}}/${DATASOURCE_DATABASE:${datasource.database:""}}}}
-    username:  ${DATASOURCE_USERNAME:${database.username:""}}
-    password: ${DATASOURCE_PASSWORD:${database.password:""}}
+    url: jdbc:mysql://localhost:3306/desafio?useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: root
   jpa:
     hibernate.ddl-auto: update
     generate-ddl: true
-    show-sql: ${SHOW_SQL:true}
-
-    server:
-      port: ${SERVER_PORT:8081}
+    show-sql: true
